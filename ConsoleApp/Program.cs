@@ -1,3 +1,27 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using ConsoleApp;
 
-Console.WriteLine("Hello, World!");
+var input = new[,]
+{
+    //dependency    //item
+    {"t-shirt", "dress shirt"},
+    {"dress shirt", "pants"},
+    {"dress shirt", "suit jacket"},
+    {"tie", "suit jacket"},
+    {"pants", "suit jacket"},
+    {"belt", "suit jacket"},
+    {"suit jacket", "overcoat"},
+    {"dress shirt", "tie"},
+    {"suit jacket", "sun glasses"},
+    {"sun glasses", "overcoat"},
+    {"left sock", "pants"},
+    {"pants", "belt"},
+    {"suit jacket", "left shoe"},
+    {"suit jacket", "right shoe"},
+    {"left shoe", "overcoat"},
+    {"right sock", "pants"},
+    {"right shoe",  "overcoat"},
+    {"t-shirt", "suit jacket"}
+};
+
+var cd = new ClothingDependencyGraph();
+cd.ReadDependencyInput(input);
