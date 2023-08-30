@@ -3,69 +3,33 @@ using FluentAssertions;
 
 namespace Tests;
 
-public class ClothingDependencyGraphTests
+public class ClothingDependencyGraphTests : IClassFixture<ClothingDependencyGraphFixture>
 {
+    private readonly ClothingDependencyGraphFixture _clothingDependencyGraphFixture;
+
+    public ClothingDependencyGraphTests(ClothingDependencyGraphFixture clothingDependencyGraphFixture)
+    {
+        _clothingDependencyGraphFixture = clothingDependencyGraphFixture;
+    }
+
     [Fact]
     public void ReadDependencyInput_Should_Not_Throw_Exception_With_Valid_Input()
     {
-        var input = new[,]
-        {
-            //dependency    //item
-            {"t-shirt", "dress shirt"},
-            {"dress shirt", "pants"},
-            {"dress shirt", "suit jacket"},
-            {"tie", "suit jacket"},
-            {"pants", "suit jacket"},
-            {"belt", "suit jacket"},
-            {"suit jacket", "overcoat"},
-            {"dress shirt", "tie"},
-            {"suit jacket", "sun glasses"},
-            {"sun glasses", "overcoat"},
-            {"left sock", "pants"},
-            {"pants", "belt"},
-            {"suit jacket", "left shoe"},
-            {"suit jacket", "right shoe"},
-            {"left shoe", "overcoat"},
-            {"right sock", "pants"},
-            {"right shoe",  "overcoat"},
-            {"t-shirt", "suit jacket"}
-        };
-        
-        var cd = new ClothingDependencyGraph();
-        var exception = Record.Exception(() => cd.ReadDependencyInput(input));
-
+        var exception = Record.Exception(() => _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray));
         exception.Should().Be(null);
     }
 
     [Fact]
     public void ReadDependencyInput_Should_Generate_Nine_ClothingItemNodes()
     {
-        var input = new[,]
-        {
-            //dependency    //item
-            {"t-shirt", "dress shirt"},
-            {"dress shirt", "pants"},
-            {"dress shirt", "suit jacket"},
-            {"tie", "suit jacket"},
-            {"pants", "suit jacket"},
-            {"belt", "suit jacket"},
-            {"suit jacket", "overcoat"},
-            {"dress shirt", "tie"},
-            {"suit jacket", "sun glasses"},
-            {"sun glasses", "overcoat"},
-            {"left sock", "pants"},
-            {"pants", "belt"},
-            {"suit jacket", "left shoe"},
-            {"suit jacket", "right shoe"},
-            {"left shoe", "overcoat"},
-            {"right sock", "pants"},
-            {"right shoe",  "overcoat"},
-            {"t-shirt", "suit jacket"}
-        };
-        
-        var cd = new ClothingDependencyGraph();
-        cd.ReadDependencyInput(input);
-
-        cd.ClothingItemNodes.Count.Should().Be(9);
+        _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Count.Should().Be(9);
+    }
+    
+     [Fact]
+    public void ReadDependencyInput_Should_Have_First_ClothingItemNode_As_DressShirt()
+    {
+        _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.ElementAt(0).ClothingItemName.Should().Be("dress shirt");
     }
 }
