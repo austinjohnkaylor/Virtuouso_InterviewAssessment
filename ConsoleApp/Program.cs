@@ -23,5 +23,7 @@ var input = new[,]
     {"t-shirt", "suit jacket"}
 };
 
-var cd = new ClothingDependencyGraph();
-cd.ReadDependencyInput(input);
+var clothingDependencyGraph = new ClothingDependencyGraph(input);
+clothingDependencyGraph.GenerateNodes();
+
+

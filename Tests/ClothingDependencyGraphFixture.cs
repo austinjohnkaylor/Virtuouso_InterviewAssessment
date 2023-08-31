@@ -4,8 +4,9 @@ namespace Tests;
 
 public class ClothingDependencyGraphFixture : IDisposable
 {
-    public ClothingDependencyGraph Graph { get; private set; } = new();
-    public string[,] ExampleDependencyArray { get; } = {
+    public ClothingDependencyGraph Graph { get; } = new(ExampleDependencyArray);
+
+    public static string[,] ExampleDependencyArray { get; } = {
         //dependency    //item
         { "t-shirt", "dress shirt" },
         { "dress shirt", "pants" },
@@ -26,9 +27,9 @@ public class ClothingDependencyGraphFixture : IDisposable
         { "right shoe", "overcoat" },
         { "t-shirt", "suit jacket" }
     };
-    
+
     public void Dispose()
     {
-        // don't need to clean up anything here
+        Graph.ClothingItemNodes.Clear(); // clear all the nodes in the graph
     }
 }

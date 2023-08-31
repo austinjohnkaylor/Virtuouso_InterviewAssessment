@@ -1,4 +1,3 @@
-using ConsoleApp;
 using FluentAssertions;
 
 namespace Tests;
@@ -9,27 +8,58 @@ public class ClothingDependencyGraphTests : IClassFixture<ClothingDependencyGrap
 
     public ClothingDependencyGraphTests(ClothingDependencyGraphFixture clothingDependencyGraphFixture)
     {
-        _clothingDependencyGraphFixture = clothingDependencyGraphFixture;
+        _clothingDependencyGraphFixture = clothingDependencyGraphFixture; 
     }
 
     [Fact]
-    public void ReadDependencyInput_Should_Not_Throw_Exception_With_Valid_Input()
+    public void GenerateGraph_Should_Not_Throw_Exception_With_Valid_Input()
     {
-        var exception = Record.Exception(() => _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray));
+        _clothingDependencyGraphFixture.Graph.GenerateNodes();
+        var exception = Record.Exception(() => _clothingDependencyGraphFixture.Graph.GenerateRelationshipsBetweenNodes());
         exception.Should().Be(null);
     }
-
+    
     [Fact]
-    public void ReadDependencyInput_Should_Generate_Nine_ClothingItemNodes()
+    public void GenerateGraph_Should_Have_All_Clothing_Items_As_Nodes()
     {
-        _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray);
-        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Count.Should().Be(9);
+        _clothingDependencyGraphFixture.Graph.GenerateNodes();
+        _clothingDependencyGraphFixture.Graph.GenerateRelationshipsBetweenNodes();
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "left sock").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "right sock").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "dress shirt").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "tie").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "t-shirt").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "pants").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "suit jacket").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "overcoat").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "belt").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "sun glasses").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "left shoe").Should().Be(true);
+        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.Exists(a => a.ClothingItemName == "right shoe").Should().Be(true);
     }
     
-     [Fact]
-    public void ReadDependencyInput_Should_Have_First_ClothingItemNode_As_DressShirt()
+    [Fact]
+    public void SortGraphUsingKahnsAlgorithm_Should_Return_Correct_Clothing_Operation_Order()
     {
-        _clothingDependencyGraphFixture.Graph.ReadDependencyInput(_clothingDependencyGraphFixture.ExampleDependencyArray);
-        _clothingDependencyGraphFixture.Graph.ClothingItemNodes.ElementAt(0).ClothingItemName.Should().Be("dress shirt");
+        _clothingDependencyGraphFixture.Graph.GenerateNodes();
+        _clothingDependencyGraphFixture.Graph.GenerateRelationshipsBetweenNodes();
+        var orderOfOperations = _clothingDependencyGraphFixture.Graph.SortGraphUsingKahnsAlgorithm();
+        orderOfOperations.Should().BeEquivalentTo(new List<string>
+        {
+            "left sock",
+            "right sock", 
+            "t-shirt",
+            "dress shirt",
+            "pants",
+            "tie",
+            "belt",
+            "suit jacket",
+            "left shoe", 
+            "right shoe", 
+            "sun glasses",
+            "overcoat"
+        });
+
     }
+    
 }
